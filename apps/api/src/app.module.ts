@@ -1,10 +1,8 @@
+// apps/api/src/app.module.ts
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { ComplianceModule } from './compliance/compliance.module';
 
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [ComplianceModule],
 })
 export class AppModule {}
