@@ -49,13 +49,13 @@ Stellar Watchdog delivers an asymmetric, highly visible command dashboard design
 ## 🛠️ Key Features
 
 ### Current Implemented Features
+* **Stellar Transaction Compliance Analyzer:** dedicated RegTech engine where compliance officers can input any Stellar transaction hash. The NestJS backend fetches the ledger data via Horizon and runs it through a heuristic scoring algorithm to calculate a live Risk Score and flag potential violations (like missing Travel Rule memos or high-complexity operations).
 * **Live Horizon Event Syncing:** The backend actively queries the Stellar Horizon Testnet to fetch real-time ledger telemetry and network health status, feeding live blockchain state directly to the compliance dashboard.
 * **Asymmetric Command Center Layout:** Left-aligned dashboard workspace featuring high-density typography, expandable/collapsible sidebar navigation panels, and deep-space dark themes designed for prolonged operator monitoring sessions.
 * **Freighter Wallet Authentication:** Ecosystem-native authentication allowing compliance operators to connect directly to the dashboard using their Stellar Freighter wallet via @stellar/freighter-api.
 * **Asymmetric Command Center Layout:** Left-aligned dashboard workspace featuring high-density typography and deep-space dark themes designed for prolonged operator monitoring sessions.
 * **Multi-Jurisdictional Tracker Matrix:** High-density requirement panels tracking live checklist rules across global regulatory domains (`EU-MiCA`, `FATF`, `US-SEC`, `US-OFAC`).
 * **Dedicated Workflow Provisioning UI:** Full-page asynchronous entry wizard designed to provision new structural frameworks into the active validation evaluation engines, removing restrictive modal bottlenecks.
-
 
 
 ### Planned / Upcoming Features

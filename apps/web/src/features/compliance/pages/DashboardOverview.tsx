@@ -1,19 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader } from '../../../components/ui/card';
 import { ShieldIcon, PlusIcon, FlagIcon, ListIcon } from '../../../components/icons';
+import { useNetworkStatus } from '../hooks/useNetworkStatus';
 
 export const DashboardOverview: React.FC = () => {
   const navigate = useNavigate();
-  const [stellarData, setStellarData] = useState<any>(null);
-
-  // Fetch the live Horizon data from our new backend endpoint
-  useEffect(() => {
-    fetch('http://localhost:3000/compliance/stellar/network-status')
-      .then((res) => res.json())
-      .then((json) => setStellarData(json.data))
-      .catch((err) => console.error('Failed to fetch Stellar telemetry:', err));
-  }, []);
+  // Using our new custom hook!
+  const stellarData = useNetworkStatus();
 
   return (
     <div className="p-8 max-w-7xl mx-auto space-y-8 text-left">

@@ -24,7 +24,7 @@ class UpdateStatusDto {
 @Controller('compliance')
 @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true, transform: true }))
 export class ComplianceController {
-  constructor(private readonly complianceService: ComplianceService) {}
+  constructor(private readonly complianceService: ComplianceService) { }
 
   /**
    * NEW STELLAR INTEGRATION: GET /compliance/stellar/network-status
@@ -36,6 +36,19 @@ export class ComplianceController {
     return {
       success: true,
       data: await this.complianceService.getLiveNetworkStatus(),
+    };
+  }
+
+  /**
+   * NEW STELLAR INTEGRATION: GET /compliance/stellar/analyze/:hash
+   * Analyzes a specific Stellar transaction for regulatory compliance
+   */
+  @Get('stellar/analyze/:hash')
+  @HttpCode(HttpStatus.OK)
+  async analyzeTransaction(@Param('hash') hash: string) {
+    return {
+      success: true,
+      data: await this.complianceService.analyzeTransaction(hash),
     };
   }
 

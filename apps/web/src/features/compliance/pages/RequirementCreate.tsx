@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Card, CardContent } from '../../../components/ui/card';
 import { SpinnerIcon } from '../../../components/icons';
+import { ComplianceService } from '../services/compliance.service';
 
 export const RequirementCreate: React.FC = () => {
   const navigate = useNavigate();
@@ -11,20 +12,31 @@ export const RequirementCreate: React.FC = () => {
   const handlePublishAction = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.title.trim()) return;
+    
     setSubmitting(true);
-    await new Promise((r) => setTimeout(r, 800));
-    setSubmitting(false);
-    navigate('/compliance');
+    try {
+      // Pushing to our live API!
+      await ComplianceService.create({
+        title: formData.title,
+        description: formData.description,
+        jurisdiction: formData.jurisdiction,
+        status: 'PENDING_REVIEW',
+      });
+      navigate('/compliance');
+    } catch (err) {
+      console.error("Failed to create checklist", err);
+      setSubmitting(false);
+    }
   };
 
   return (
     <div className="p-8 max-w-3xl mx-auto space-y-6">
       <div className="border-b border-slate-200 pb-6">
-        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Provision New Requirement</h1>
-        <p className="text-sm text-slate-500 mt-1">Map configuration frameworks into the active verification logic engine.</p>
+        <h1 className="text-2xl font-bold text-slate-900 tracking-tight text-left">Provision New Requirement</h1>
+        <p className="text-sm text-slate-500 mt-1 text-left">Map configuration frameworks into the active verification logic engine.</p>
       </div>
 
-      <form onSubmit={handlePublishAction}>
+      <form onSubmit={handlePublishAction} className="text-left">
         <Card>
           <CardContent className="p-8 space-y-6">
             <div>
@@ -56,7 +68,7 @@ export const RequirementCreate: React.FC = () => {
               <select
                 value={formData.jurisdiction}
                 onChange={(e) => setFormData({ ...formData, jurisdiction: e.target.value })}
-                className="w-full px-4 py-2.5 text-sm bg-white border border-slate-200 rounded-lg outline-none transition-all focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+                className="w-full px-4 py-2.5 text-sm bg-white border border-slate-200 rounded-lg outline-none transition-all focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 cursor-pointer"
               >
                 {['EU-MiCA', 'FATF', 'US-SEC', 'US-OFAC', 'UK-FCA'].map((opt) => (
                   <option key={opt} value={opt}>{opt}</option>
@@ -65,14 +77,14 @@ export const RequirementCreate: React.FC = () => {
             </div>
           </CardContent>
 
-          <div className="px-8 py-4 bg-slate-50 border-t border-slate-100 flex items-center justify-end gap-3">
+          <div className="px-8 py-4 bg-slate-50 border-t border-slate-100 flex items-center justify-end gap-3 rounded-b-xl">
             <Link to="/dashboard" className="px-4 py-2 text-sm font-medium text-slate-600 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">
               Cancel Execution
             </Link>
             <button
               type="submit"
               disabled={submitting}
-              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-colors shadow-sm"
+              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-colors shadow-sm cursor-pointer"
             >
               {submitting && <SpinnerIcon className="w-3.5 h-3.5 text-indigo-200" />}
               {submitting ? 'Publishing Frame...' : 'Deploy Framework Requirement'}
