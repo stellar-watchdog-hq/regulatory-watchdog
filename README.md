@@ -49,15 +49,16 @@ Stellar Watchdog delivers an asymmetric, highly visible command dashboard design
 ## 🛠️ Key Features
 
 ### Current Implemented Features
+* **Live Horizon Event Syncing:** The backend actively queries the Stellar Horizon Testnet to fetch real-time ledger telemetry and network health status, feeding live blockchain state directly to the compliance dashboard.
 * **Asymmetric Command Center Layout:** Left-aligned dashboard workspace featuring high-density typography, expandable/collapsible sidebar navigation panels, and deep-space dark themes designed for prolonged operator monitoring sessions.
-* **Ecosystem Validation Metrics:** High-fidelity KPI visualization blocks capturing active framework totals, multi-jurisdiction scopes, current warning exceptions, and real-time network stability rates.
+* **Freighter Wallet Authentication:** Ecosystem-native authentication allowing compliance operators to connect directly to the dashboard using their Stellar Freighter wallet via @stellar/freighter-api.
+* **Asymmetric Command Center Layout:** Left-aligned dashboard workspace featuring high-density typography and deep-space dark themes designed for prolonged operator monitoring sessions.
 * **Multi-Jurisdictional Tracker Matrix:** High-density requirement panels tracking live checklist rules across global regulatory domains (`EU-MiCA`, `FATF`, `US-SEC`, `US-OFAC`).
 * **Dedicated Workflow Provisioning UI:** Full-page asynchronous entry wizard designed to provision new structural frameworks into the active validation evaluation engines, removing restrictive modal bottlenecks.
-* **Audit Trail Timelines:** Detailed page view interfaces visualizing deep metadata logs, tracking target rulesets from initialization through exception states and clear evaluation milestones.
-* **Optimistic UI Sync Controllers:** Front-end status updates apply optimistically across table controls, dynamically executing async network requests before fallback triggers verify data loop accuracy.
+
+
 
 ### Planned / Upcoming Features
-* **Live Horizon Event Syncing:** Directly tapping into Stellar Horizon transaction and operations streams to trigger real-time, rule-based security validation pipelines.
 * **Interactive Multi-Asset Data Visualizations:** Integrating responsive Recharts analytical graphs to map audit trends, historical compliance distributions, and cross-border risk maps.
 * **Prisma Database Persistence Layer:** Migrating backend in-memory data mocks to a hardened local PostgreSQL relational database instance.
 * **System Action Auditing Modules:** Tracking and logging structural status changes made by administrative operators, exporting certified files for institutional legal reviews.

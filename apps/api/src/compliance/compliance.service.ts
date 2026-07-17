@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateChecklistDto, ComplianceStatus } from './dto/create-checklist.dto';
+import * as StellarSdk from 'stellar-sdk';
 
 export interface ComplianceChecklist {
   id: string;
@@ -15,8 +16,7 @@ let mockChecklists: ComplianceChecklist[] = [
   {
     id: 'clst-001',
     title: 'AML/KYC Identity Verification',
-    description:
-      'Verify all onboarded anchor clients comply with Anti-Money Laundering and Know Your Customer standards. This includes document validation, PEP screening, and sanctions list cross-referencing.',
+    description: 'Verify all onboarded anchor clients comply with Anti-Money Laundering and Know Your Customer standards.',
     status: ComplianceStatus.PASSED,
     jurisdiction: 'EU-MiCA',
     updatedAt: new Date('2024-06-10T08:30:00Z').toISOString(),
@@ -25,47 +25,40 @@ let mockChecklists: ComplianceChecklist[] = [
   {
     id: 'clst-002',
     title: 'Travel Rule Data Transmission',
-    description:
-      'Ensure all virtual asset transfers above the FATF threshold include compliant originator and beneficiary data. Confirm VASP-to-VASP messaging meets IVMS 101 standards.',
+    description: 'Ensure all virtual asset transfers above the FATF threshold include compliant originator and beneficiary data.',
     status: ComplianceStatus.PENDING_REVIEW,
     jurisdiction: 'FATF',
     updatedAt: new Date('2024-06-18T14:22:00Z').toISOString(),
     createdAt: new Date('2024-02-20T09:00:00Z').toISOString(),
   },
-  {
-    id: 'clst-003',
-    title: 'Reserve Asset Attestation',
-    description:
-      'Monthly third-party audit of stablecoin reserve backing. All issued tokens must maintain 1:1 fiat backing verified by a licensed auditor and published on-chain.',
-    status: ComplianceStatus.FLAGGED,
-    jurisdiction: 'US-SEC',
-    updatedAt: new Date('2024-06-20T11:05:00Z').toISOString(),
-    createdAt: new Date('2024-03-01T12:00:00Z').toISOString(),
-  },
-  {
-    id: 'clst-004',
-    title: 'Sanctions Screening — OFAC SDN List',
-    description:
-      'Automated screening of all wallet addresses and counterparties against the OFAC Specially Designated Nationals list prior to transaction settlement on the Stellar network.',
-    status: ComplianceStatus.PASSED,
-    jurisdiction: 'US-OFAC',
-    updatedAt: new Date('2024-06-22T16:44:00Z').toISOString(),
-    createdAt: new Date('2024-03-15T08:30:00Z').toISOString(),
-  },
-  {
-    id: 'clst-005',
-    title: 'MiCA Whitepaper Disclosure',
-    description:
-      'Publish and maintain a regulator-approved crypto-asset whitepaper disclosing technology, risks, governance, and token issuance terms in compliance with EU Markets in Crypto-Assets regulation.',
-    status: ComplianceStatus.PENDING_REVIEW,
-    jurisdiction: 'EU-MiCA',
-    updatedAt: new Date('2024-06-25T09:12:00Z').toISOString(),
-    createdAt: new Date('2024-04-01T11:00:00Z').toISOString(),
-  },
 ];
 
 @Injectable()
 export class ComplianceService {
+  private server: StellarSdk.Horizon.Server;
+
+  constructor() {
+    // Initialize the Stellar Horizon Testnet connection
+    this.server = new StellarSdk.Horizon.Server('https://horizon-testnet.stellar.org');
+  }
+
+  // NEW STELLAR INTEGRATION: Fetch live network health for the dashboard
+  async getLiveNetworkStatus() {
+    try {
+      const ledgers = await this.server.ledgers().order('desc').limit(1).call();
+      const latest = ledgers.records[0];
+      return {
+        status: 'online',
+        network: 'Stellar Testnet',
+        latestLedger: latest.sequence,
+        protocolVersion: latest.protocol_version,
+        closedAt: latest.closed_at,
+      };
+    } catch (error: any) {
+      return { status: 'offline', error: error.message };
+    }
+  }
+
   findAll(): ComplianceChecklist[] {
     return mockChecklists.map((item) => ({ ...item }));
   }

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Outlet, NavLink } from 'react-router-dom';
-import { GridIcon, ShieldIcon, ListIcon, BellIcon } from '../components/icons';
+import { GridIcon, ShieldIcon, ListIcon } from '../components/icons';
+import { Navbar } from '../components/shared/navbar';
 
 export const DashboardLayout: React.FC = () => {
   const [isExpanded, setIsExpanded] = useState(true);
@@ -66,29 +67,9 @@ export const DashboardLayout: React.FC = () => {
 
       {/* ── Main Canvas Area ── */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        {/* Top Navbar */}
-        <header className="h-16 bg-[#111827]/80 border-b border-white/5 flex items-center justify-between px-8 z-10">
-          <div className="flex items-center gap-2 text-sm text-left font-medium">
-            <span className="text-[#64748B]">Stellar Watchdog</span>
-            <span className="text-white/20">/</span>
-            <span className="text-[#94A3B8]">Compliance Intelligence</span>
-          </div>
-
-          <div className="flex items-center gap-6">
-            <input 
-              type="text" 
-              placeholder="Search frameworks, risks, jurisdictions..." 
-              className="bg-[#1E293B] border border-white/5 rounded-lg px-4 py-1.5 text-xs w-64 text-white placeholder-slate-500 outline-none focus:border-indigo-500 transition-colors"
-            />
-            <button className="relative p-1.5 text-[#94A3B8] hover:text-white transition-colors">
-              <BellIcon className="w-4 h-4" />
-              <span className="absolute top-1 right-1 w-2 h-2 bg-rose-500 rounded-full" />
-            </button>
-            <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-600 flex items-center justify-center shadow font-bold text-xs">
-              AO
-            </div>
-          </div>
-        </header>
+        
+        {/* Web3 Integrated Navbar */}
+        <Navbar />
 
         {/* Content Box */}
         <main className="flex-1 overflow-y-auto bg-[#0B1220] text-left">

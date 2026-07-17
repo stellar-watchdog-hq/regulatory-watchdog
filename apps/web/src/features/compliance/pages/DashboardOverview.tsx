@@ -1,10 +1,19 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader } from '../../../components/ui/card';
 import { ShieldIcon, PlusIcon, FlagIcon, ListIcon } from '../../../components/icons';
 
 export const DashboardOverview: React.FC = () => {
   const navigate = useNavigate();
+  const [stellarData, setStellarData] = useState<any>(null);
+
+  // Fetch the live Horizon data from our new backend endpoint
+  useEffect(() => {
+    fetch('http://localhost:3000/compliance/stellar/network-status')
+      .then((res) => res.json())
+      .then((json) => setStellarData(json.data))
+      .catch((err) => console.error('Failed to fetch Stellar telemetry:', err));
+  }, []);
 
   return (
     <div className="p-8 max-w-7xl mx-auto space-y-8 text-left">
@@ -26,45 +35,83 @@ export const DashboardOverview: React.FC = () => {
 
       {/* KPI Dashboard Metrics Grid */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
-        {[
-          { label: 'Active Frameworks', value: '5 Mapped', sub: 'Across 4 global grids', icon: <ListIcon className="w-4 h-4 text-indigo-400" /> },
-          { label: 'Jurisdictions Tracked', value: '4 Scopes', sub: 'EU-MiCA, FATF, FinCEN', icon: <ShieldIcon className="w-4 h-4 text-sky-400" /> },
-          { label: 'Critical Exceptions', value: '1 Active', sub: 'Requires immediate action', icon: <FlagIcon className="w-4 h-4 text-rose-400" />, alert: true },
-          { label: 'Verification Rate', value: '100% Stable', sub: 'All validation points passing', icon: <ShieldIcon className="w-4 h-4 text-emerald-400" /> },
-        ].map((stat, i) => (
-          <Card key={i} glow={stat.alert}>
-            <CardContent className="p-5 flex items-center gap-4">
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-[#243041] border border-white/5 flex-shrink-0">
-                {stat.icon}
-              </div>
-              <div className="text-left">
-                <p className="text-[10px] font-bold text-[#64748B] uppercase tracking-widest">{stat.label}</p>
-                <p className="text-xl font-bold text-white mt-0.5 tracking-tight">{stat.value}</p>
-                <p className="text-[11px] text-[#94A3B8] mt-0.5">{stat.sub}</p>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+        <Card>
+          <CardContent className="p-5 flex items-center gap-4">
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-[#243041] border border-white/5 flex-shrink-0">
+              <ListIcon className="w-4 h-4 text-indigo-400" />
+            </div>
+            <div className="text-left">
+              <p className="text-[10px] font-bold text-[#64748B] uppercase tracking-widest">Active Frameworks</p>
+              <p className="text-xl font-bold text-white mt-0.5 tracking-tight">5 Mapped</p>
+              <p className="text-[11px] text-[#94A3B8] mt-0.5">Across 4 global grids</p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-5 flex items-center gap-4">
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-[#243041] border border-white/5 flex-shrink-0">
+              <ShieldIcon className="w-4 h-4 text-sky-400" />
+            </div>
+            <div className="text-left">
+              <p className="text-[10px] font-bold text-[#64748B] uppercase tracking-widest">Jurisdictions Tracked</p>
+              <p className="text-xl font-bold text-white mt-0.5 tracking-tight">4 Scopes</p>
+              <p className="text-[11px] text-[#94A3B8] mt-0.5">EU-MiCA, FATF, FinCEN</p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card glow={true}>
+          <CardContent className="p-5 flex items-center gap-4">
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-[#243041] border border-white/5 flex-shrink-0">
+              <FlagIcon className="w-4 h-4 text-rose-400" />
+            </div>
+            <div className="text-left">
+              <p className="text-[10px] font-bold text-[#64748B] uppercase tracking-widest">Critical Exceptions</p>
+              <p className="text-xl font-bold text-white mt-0.5 tracking-tight">1 Active</p>
+              <p className="text-[11px] text-[#94A3B8] mt-0.5">Requires immediate action</p>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* LIVE STELLAR METRIC CARD */}
+        <Card glow={stellarData?.status === 'online'}>
+          <CardContent className="p-5 flex items-center gap-4">
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-[#243041] border border-white/5 flex-shrink-0">
+              <ShieldIcon className={`w-4 h-4 ${stellarData?.status === 'online' ? 'text-emerald-400' : 'text-[#64748B]'}`} />
+            </div>
+            <div className="text-left overflow-hidden">
+              <p className="text-[10px] font-bold text-[#64748B] uppercase tracking-widest">Live Horizon Sync</p>
+              <p className="text-xl font-bold text-white mt-0.5 tracking-tight truncate">
+                {stellarData ? `L: ${stellarData.latestLedger}` : 'Syncing...'}
+              </p>
+              <p className="text-[11px] text-[#94A3B8] mt-0.5 truncate">
+                {stellarData ? `Proto v${stellarData.protocolVersion} | ${stellarData.network}` : 'Awaiting connection'}
+              </p>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Modern Asymmetrical Analytics Sections */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
         
-        {/* Trend Analysis Box (2/3 Grid Area Width) */}
+        {/* Trend Analysis Box */}
         <div className="lg:col-span-2">
           <Card>
             <CardHeader>
               <h3 className="text-xs font-bold text-[#94A3B8] uppercase tracking-widest">Ecosystem Compliance Trajectory</h3>
             </CardHeader>
             <CardContent className="p-6">
-              <div className="h-64 flex items-center justify-center bg-[#0B1220] rounded-xl border border-white/5 shadow-inner">
-                <span className="text-xs font-semibold uppercase tracking-wider text-[#64748B]">Interactive Recharts Processing Stream…</span>
+              <div className="h-64 flex items-center justify-center bg-[#0B1220] rounded-xl border border-white/5 shadow-inner relative overflow-hidden">
+                <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at center, #818cf8 1px, transparent 1px)', backgroundSize: '24px 24px' }}></div>
+                <span className="text-xs font-semibold uppercase tracking-wider text-[#64748B] z-10">Waiting for sufficient on-chain historical data...</span>
               </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Risk Intelligence Stream (1/3 Width) */}
+        {/* Risk Intelligence Stream */}
         <div className="lg:col-span-1">
           <Card>
             <CardHeader>
@@ -89,9 +136,7 @@ export const DashboardOverview: React.FC = () => {
             </CardContent>
           </Card>
         </div>
-
       </div>
-
     </div>
   );
 };

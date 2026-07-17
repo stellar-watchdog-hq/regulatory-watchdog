@@ -27,9 +27,18 @@ export class ComplianceController {
   constructor(private readonly complianceService: ComplianceService) {}
 
   /**
-   * GET /compliance
-   * Returns all compliance checklists.
+   * NEW STELLAR INTEGRATION: GET /compliance/stellar/network-status
+   * Fetches real-time ledger data from the Stellar Testnet
    */
+  @Get('stellar/network-status')
+  @HttpCode(HttpStatus.OK)
+  async getNetworkStatus() {
+    return {
+      success: true,
+      data: await this.complianceService.getLiveNetworkStatus(),
+    };
+  }
+
   @Get()
   @HttpCode(HttpStatus.OK)
   findAll() {
@@ -39,10 +48,6 @@ export class ComplianceController {
     };
   }
 
-  /**
-   * GET /compliance/:id
-   * Returns a single checklist by ID.
-   */
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   findOne(@Param('id') id: string) {
@@ -52,10 +57,6 @@ export class ComplianceController {
     };
   }
 
-  /**
-   * POST /compliance
-   * Creates a new compliance checklist entry.
-   */
   @Post()
   @HttpCode(HttpStatus.CREATED)
   create(@Body() dto: CreateChecklistDto) {
@@ -65,10 +66,6 @@ export class ComplianceController {
     };
   }
 
-  /**
-   * PATCH /compliance/:id/status
-   * Updates the compliance status of a checklist item.
-   */
   @Patch(':id/status')
   @HttpCode(HttpStatus.OK)
   updateStatus(@Param('id') id: string, @Body() body: UpdateStatusDto) {
